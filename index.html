@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+      <meta charset="utf-8">
+      <title>Avant - Teste</title>
+      <style media="screen">
+        #list {
+          width: 200px;
+          height: 300px;
+          overflow: auto;
+          margin: 30px;
+          padding: 20px;
+        }
+        li {
+          padding: 10px;
+          list-style-type: none;
+        }
+        li:hover {
+          background: #ccc;
+        }
+      </style>
+    </head>
+    <body>
+      <!-- <input id="filter" type="text"> -->
+      <ul id='list'></ul>
+      <script type="text/javascript">
+        let start = 0;
+        const baseUrl = "https://parallelum.com.br/fipe/api/v1/carros/marcas"
+        let marcas = [];
+        const request = fetch(baseUrl)
+          .then( function(response){
+            return response.json();
+          }).then( function(response){
+              marcas = response;
+              load();
+          });
+
+          var list = document.querySelector('#list');
+          var filter = document.querySelector('#filter');
+
+          var page = 1;
+          var load = function() {
+            let page = marcas.length >= start + 10 ? start + 10 : (marcas.length - start) + start;
+
+            if (marcas.length >= page) {
+              for (var i = start; i < page; i++) {
+                var item = document.createElement('li');
+                item.innerText = marcas[i].nome;
+                list.appendChild(item);
+              }
+
+              start = start + 10
+            }
+          }
+
+          // filter.addEventListener('change', function(event) {
+          //   console.log(event.target.value);
+          //   marcas = marcas.filter( function( item ){
+          //       return item.nome.indexOf(event.target.value) !== -1;
+          //   });
+          //
+          //   load();
+          // });
+
+          list.addEventListener('scroll', function() {
+            if (list.scrollTop + list.clientHeight >= list.scrollHeight) {
+              load();
+            }
+          });
+      </script>
+    </body>
+</html>
